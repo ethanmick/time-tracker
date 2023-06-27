@@ -12,7 +12,7 @@ datasource db {
 
 model Tenant {
   id         String     @id @default(dbgenerated("concat('tnt_', replace(cast(gen_random_uuid() as text), '-', ''))")) @db.Text
-  name       String     @unique
+  name       String?
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   users      User[]
@@ -23,6 +23,7 @@ model User {
   id         String     @id @default(dbgenerated("concat('usr_', replace(cast(gen_random_uuid() as text), '-', ''))")) @db.Text
   email      String     @unique
   name       String?
+  avatar     String?
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   tenantId   String?
