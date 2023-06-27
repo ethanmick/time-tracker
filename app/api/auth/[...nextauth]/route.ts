@@ -1,3 +1,4 @@
+import { session } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { NextAuthOptions } from 'next-auth'
 import NextAuth from 'next-auth/next'
@@ -37,6 +38,25 @@ const authOption: NextAuthOptions = {
         }
       })
       return true
+    },
+    session,
+    async jwt({ token, user, account, profile }) {
+      console.log({ token, account, profile, user })
+      if (profile) {
+        const user = await prisma.user.findUnique({
+          where: {
+            email: profile.email
+          }
+        })
+        if (!user) {
+          throw new Error('No user found')
+        }
+        token.id = user.id
+        token.tenant = {
+          id: user.tenantId
+        }
+      }
+      return token
     }
   }
 }
