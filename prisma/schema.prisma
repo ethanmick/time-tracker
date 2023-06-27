@@ -9,3 +9,36 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Tenant {
+  id         String     @id @default(dbgenerated("concat('tnt_', replace(cast(gen_random_uuid() as text), '-', ''))")) @db.Text
+  name       String     @unique
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  users      User[]
+  activities Activity[]
+}
+
+model User {
+  id         String     @id @default(dbgenerated("concat('usr_', replace(cast(gen_random_uuid() as text), '-', ''))")) @db.Text
+  email      String     @unique
+  name       String?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  tenantId   String?
+  tenant     Tenant?    @relation(fields: [tenantId], references: [id])
+  activities Activity[]
+}
+
+model Activity {
+  id        String    @id @default(dbgenerated("concat('act_', replace(cast(gen_random_uuid() as text), '-', ''))")) @db.Text
+  name      String?
+  startAt   DateTime
+  endAt     DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  tenantId  String?
+  tenant    Tenant?   @relation(fields: [tenantId], references: [id])
+  userId    String
+  user      User?     @relation(fields: [userId], references: [id])
+}
