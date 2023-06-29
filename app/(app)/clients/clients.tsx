@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from '@/components/ui/button'
 import { Client } from '@prisma/client'
 import Link from 'next/link'
@@ -7,10 +9,11 @@ type ClientListProps = {
 }
 
 export const ClientList = ({ clients }: ClientListProps) => {
+  console.log('Clients', clients)
   return (
     <ul>
       {clients.map((client) => (
-        <li key={client.id}>
+        <li key={client.id + client.name}>
           <Link href={`/clients/${client.id}`}>{client.name}</Link>
         </li>
       ))}
