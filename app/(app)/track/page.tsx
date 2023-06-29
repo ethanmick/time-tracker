@@ -4,8 +4,9 @@ import { getUserSession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { cn } from '@/lib/utils'
 import { Activity } from '@prisma/client'
-import { ArrowRight, Play, Square } from 'lucide-react'
+import { Play, Square } from 'lucide-react'
 import { revalidatePath } from 'next/cache'
+import { ActivityItemRow } from './activity-item-row'
 import { ActivityDuration } from './duration'
 
 type TimeProps = {
@@ -75,22 +76,7 @@ const DailyActivities = ({ activities }: DailyActivitiesProps) => {
       <h2 className="text-lg font-medium mb-2">What you've done today.</h2>
       <ul>
         {activities.map((activity) => (
-          <li className="py-2 space-x-2 flex items-center" key={activity.id}>
-            <span className="w-1/2">{activity.name}</span>
-            <span>
-              {new Intl.DateTimeFormat(undefined, {
-                hour: 'numeric',
-                minute: 'numeric'
-              }).format(activity.startAt)}
-            </span>
-            <ArrowRight size={16} />
-            <span>
-              {new Intl.DateTimeFormat(undefined, {
-                hour: 'numeric',
-                minute: 'numeric'
-              }).format(activity.endAt || new Date())}
-            </span>
-          </li>
+          <ActivityItemRow activity={activity} key={activity.id} />
         ))}
       </ul>
     </div>
@@ -143,8 +129,6 @@ export default async function TrackPage() {
       startAt: 'asc'
     }
   })
-
-  console.log('dailyActivities', dailyActivities)
 
   return (
     <main className="mx-auto container py-4 space-y-12">
