@@ -73,7 +73,7 @@ type DailyActivitiesProps = {
 const DailyActivities = ({ activities }: DailyActivitiesProps) => {
   return (
     <div>
-      <h2 className="text-lg font-medium mb-2">What you've done today.</h2>
+      <h2 className="text-lg font-medium mb-2">What you&apos;ve done today.</h2>
       <ul>
         {activities.map((activity) => (
           <ActivityItemRow activity={activity} key={activity.id} />
