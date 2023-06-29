@@ -131,9 +131,9 @@ export default async function TrackPage() {
   })
 
   return (
-    <main className="mx-auto container py-4 space-y-12">
+    <div className="mx-auto container py-4 space-y-12">
       <NewActivity activity={currentActivity} />
       <DailyActivities activities={dailyActivities} />
-    </main>
+    </div>
   )
 }

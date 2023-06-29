@@ -2,7 +2,10 @@ import { getUserSession } from '@/lib/auth'
 import Link from 'next/link'
 import { Avatar } from './avatar'
 
-const links = [{ href: '/track', label: 'Track' }]
+const links = [
+  { href: '/track', label: 'Track' },
+  { href: '/clients', label: 'Clients' }
+]
 
 export async function NavBar() {
   const user = await getUserSession()
@@ -13,7 +16,7 @@ export async function NavBar() {
           <span className="font-semibold">Time Tracker</span>
         </Link>
         <nav>
-          <ul>
+          <ul className="flex items-center gap-4">
             {links.map(({ href, label }) => (
               <li key={href}>
                 <Link
