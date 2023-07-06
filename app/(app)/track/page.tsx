@@ -1,10 +1,18 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger
+} from '@/components/ui/select'
 import { getUserSession } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { cn } from '@/lib/utils'
-import { Activity } from '@prisma/client'
-import { Play, Square } from 'lucide-react'
+import { Activity, Client, Project } from '@prisma/client'
+import { Building2, FolderOpenDot, Play, Square } from 'lucide-react'
 import { revalidatePath } from 'next/cache'
 import { ActivityItemRow } from './activity-item-row'
 import { ActivityDuration } from './duration'
@@ -15,9 +23,11 @@ type TimeProps = {
 
 type NewActivityProps = {
   activity?: Activity | null
+  clients: Client[]
+  projects: Project[]
 }
 
-const NewActivity = ({ activity }: NewActivityProps) => {
+const NewActivity = ({ activity, clients, projects }: NewActivityProps) => {
   async function startActivity(data: FormData) {
     'use server'
     const user = await getUserSession()
@@ -26,7 +36,17 @@ const NewActivity = ({ activity }: NewActivityProps) => {
         user: { connect: { id: user.id } },
         tenant: { connect: { id: user.tenant.id } },
         name: data.get('name') as string,
-        startAt: new Date()
+        startAt: new Date(),
+        client: {
+          connect: {
+            id: (data.get('client') as string) ?? undefined
+          }
+        },
+        project: {
+          connect: {
+            id: (data.get('project') as string) ?? undefined
+          }
+        }
       }
     })
     revalidatePath('/track')
@@ -52,6 +72,38 @@ const NewActivity = ({ activity }: NewActivityProps) => {
         <div className="flex items-center space-x-4">
           <Input type="text" name="name" defaultValue={activity?.name || ''} />
           <input type="hidden" name="id" defaultValue={activity?.id || ''} />
+          <Select name="client">
+            <SelectTrigger className="w-[50px]">
+              <Building2 size={32} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Client</SelectLabel>
+                <SelectItem value="">None</SelectItem>
+                {clients.map((client) => (
+                  <SelectItem value={client.id} key={client.id}>
+                    {client.name}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <Select name="project">
+            <SelectTrigger className="w-[50px]">
+              <FolderOpenDot size={32} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Project</SelectLabel>
+                <SelectItem value="">None</SelectItem>
+                {projects.map((project) => (
+                  <SelectItem value={project.id} key={project.id}>
+                    {project.name}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
           {activity && <ActivityDuration startAt={activity.startAt} />}
           <Button
             type="submit"
@@ -90,6 +142,18 @@ export default async function TrackPage() {
       tenantId: user.tenant.id,
       userId: user.id,
       endAt: null
+    }
+  })
+
+  const clients = await prisma.client.findMany({
+    where: {
+      tenantId: user.tenant.id
+    }
+  })
+
+  const projects = await prisma.project.findMany({
+    where: {
+      tenantId: user.tenant.id
     }
   })
 
@@ -132,7 +196,11 @@ export default async function TrackPage() {
 
   return (
     <div className="mx-auto container py-4 space-y-12">
-      <NewActivity activity={currentActivity} />
+      <NewActivity
+        activity={currentActivity}
+        clients={clients}
+        projects={projects}
+      />
       <DailyActivities activities={dailyActivities} />
     </div>
   )
