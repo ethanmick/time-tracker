@@ -1,10 +1,5 @@
-import { NavBar } from '@/components/nav-bar'
+import { redirect } from 'next/navigation'
 
 export default function Home() {
-  return (
-    <>
-      <NavBar />
-      <main className="">Main Page</main>
-    </>
-  )
+  redirect('/track')
 }
