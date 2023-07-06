@@ -65,6 +65,7 @@ model Client {
 model Project {
   id         String     @id @default(dbgenerated("concat('prj_', replace(cast(gen_random_uuid() as text), '-', ''))")) @db.Text
   name       String
+  color      String?
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   tenantId   String
