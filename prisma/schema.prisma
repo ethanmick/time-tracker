@@ -18,6 +18,7 @@ model Tenant {
   users      User[]
   activities Activity[]
   clients    Client[]
+  Project    Project[]
 }
 
 model User {
@@ -45,6 +46,8 @@ model Activity {
   user      User      @relation(fields: [userId], references: [id])
   clientId  String?   @db.Text
   client    Client?   @relation(fields: [clientId], references: [id])
+  projectId String?   @db.Text
+  Project   Project?  @relation(fields: [projectId], references: [id])
 }
 
 model Client {
@@ -55,5 +58,18 @@ model Client {
   updatedAt  DateTime   @updatedAt
   tenantId   String
   tenant     Tenant     @relation(fields: [tenantId], references: [id])
+  activities Activity[]
+  projects   Project[]
+}
+
+model Project {
+  id         String     @id @default(dbgenerated("concat('prj_', replace(cast(gen_random_uuid() as text), '-', ''))")) @db.Text
+  name       String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  tenantId   String
+  tenant     Tenant     @relation(fields: [tenantId], references: [id])
+  clientId   String
+  client     Client     @relation(fields: [clientId], references: [id])
   activities Activity[]
 }
