@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { NextAuthOptions } from 'next-auth'
 import NextAuth from 'next-auth/next'
 import GoogleProvider from 'next-auth/providers/google'
+import { cookies } from 'next/headers'
 
 const authOption: NextAuthOptions = {
   session: {
@@ -20,7 +21,8 @@ const authOption: NextAuthOptions = {
         throw new Error('No profile')
       }
 
-      const user = await prisma.user.upsert({
+      const inviteKey = cookies().get('invite_key')?.value
+      await prisma.user.upsert({
         where: {
           email: profile.email
         },
@@ -28,16 +30,24 @@ const authOption: NextAuthOptions = {
           email: profile.email,
           name: profile.name,
           avatar: (profile as any).picture,
-          role: 'OWNER',
-          tenant: {
-            create: {}
-          }
+          role: inviteKey ? 'USER' : 'OWNER',
+          tenant: inviteKey
+            ? {
+                connect: {
+                  inviteKey
+                }
+              }
+            : {
+                create: {}
+              }
         },
         update: {
           name: profile.name,
           avatar: (profile as any).picture
         }
       })
+
+      cookies().delete('invite_key')
       return true
     },
     session,

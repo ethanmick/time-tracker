@@ -32,6 +32,7 @@ model Tenant {
   stripeCustomerId String?
   plan             Plan       @default(FREE)
   expirationDate   DateTime? // NULL -> means no expiration
+  inviteKey        String     @unique @default(dbgenerated("replace(cast(gen_random_uuid() as text), '-', '')")) @db.Text
   users            User[]
   activities       Activity[]
   clients          Client[]
