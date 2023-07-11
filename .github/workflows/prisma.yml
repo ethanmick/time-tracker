@@ -15,6 +15,9 @@ jobs:
         with:
           node-version: 18
           cache: 'pnpm'
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8.6.2
       - run: pnpm install
       - run: pnpx prisma db push
         env:
