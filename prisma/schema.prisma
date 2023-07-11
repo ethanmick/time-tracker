@@ -10,15 +10,23 @@ datasource db {
   url      = env("DATABASE_PRISMA_URL")
 }
 
+enum Plan {
+  FREE
+  PRO
+}
+
 model Tenant {
-  id         String     @id @default(dbgenerated("concat('tnt_', replace(cast(gen_random_uuid() as text), '-', ''))")) @db.Text
-  name       String?
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  users      User[]
-  activities Activity[]
-  clients    Client[]
-  Project    Project[]
+  id               String     @id @default(dbgenerated("concat('tnt_', replace(cast(gen_random_uuid() as text), '-', ''))")) @db.Text
+  name             String?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  stripeCustomerId String?
+  plan             Plan       @default(FREE)
+  expirationDate   DateTime? // NULL -> means no expiration
+  users            User[]
+  activities       Activity[]
+  clients          Client[]
+  projects         Project[]
 }
 
 model User {
