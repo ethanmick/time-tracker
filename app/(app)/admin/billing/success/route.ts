@@ -18,6 +18,7 @@ export async function GET(req: NextRequest) {
     where: { id: user.tenant.id },
     data: {
       stripeCustomerId: customerId,
+      expirationDate: null,
       plan: 'PRO'
     }
   })
