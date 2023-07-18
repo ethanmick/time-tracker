@@ -7,3 +7,7 @@ export function getDuration(date1: Date, date2: Date) {
     remainingMinutes < 10 ? '0' + remainingMinutes : remainingMinutes
   return hours + ':' + minutesString
 }
+
+export function getDurationInMilliseconds(date1: Date, date2: Date) {
+  return Math.abs(date2.getTime() - date1.getTime())
+}
