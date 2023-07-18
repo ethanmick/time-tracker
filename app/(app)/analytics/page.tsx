@@ -45,12 +45,34 @@ export default async function AnalyticsPage({
 }: Props) {
   const { from, to } = getDates(fromUnparsed, toUnparsed)
   const user = await getUserSession()
-  console.log('From', from, 'To', to)
-  const activities = await prisma.activity.findMany({
+
+  const clients = await prisma.client.findMany({
     where: {
       tenantId: user.tenant.id,
+      activities: {
+        some: {
+          startAt: {
+            gte: from
+          },
+          endAt: {
+            lte: to
+          }
+        }
+      }
+    },
+    include: {
+      activities: true
+    }
+  })
+
+  const nullClientActivities = await prisma.activity.findMany({
+    where: {
+      tenantId: user.tenant.id,
+      clientId: null,
       startAt: {
-        gte: from,
+        gte: from
+      },
+      endAt: {
         lte: to
       }
     }
@@ -63,18 +85,41 @@ export default async function AnalyticsPage({
   }
 
   return (
-    <div className="mx-auto container py-4">
+    <div className="mx-auto container py-4 space-y-4">
       <h1 className="text-lg font-medium mb-2">Analytics</h1>
       <form action={reload} className="flex items-center gap-4">
         <DatePickerWithRange from={from} to={to} />
         <Button type="submit">Update</Button>
       </form>
-      {activities.length > 0 && (
-        <ul className="divide-y">
-          {activities.map((activity) => (
-            <li key={activity.id} className="py-2">
-              {activity.name} -{' '}
-              {getDuration(activity.startAt, activity.endAt || new Date())}
+      {nullClientActivities.length > 0 && (
+        <div>
+          <h2 className="text-lg font-semibold">No client</h2>
+          <ul className="divide-y">
+            {nullClientActivities.map((activity) => (
+              <li key={activity.id} className="py-2">
+                {activity.name} -{' '}
+                {getDuration(activity.startAt, activity.endAt || new Date())}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {clients.length > 0 && (
+        <ul className="">
+          {clients.map((client) => (
+            <li key={client.id}>
+              <h2 className="text-lg font-semibold">{client.name}</h2>
+              <ul>
+                {client.activities.map((activity) => (
+                  <li key={activity.id} className="py-2">
+                    {activity.name} -{' '}
+                    {getDuration(
+                      activity.startAt,
+                      activity.endAt || new Date()
+                    )}
+                  </li>
+                ))}
+              </ul>
             </li>
           ))}
         </ul>
