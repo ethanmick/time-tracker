@@ -24,7 +24,7 @@ export default async function ProfilePage() {
           <Image
             className="rounded-full"
             alt="Profile Picture"
-            src={user.image}
+            src={user.image || ''}
             width={150}
             height={150}
           />
