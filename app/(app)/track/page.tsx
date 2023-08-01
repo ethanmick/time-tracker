@@ -187,9 +187,8 @@ export default async function TrackPage() {
       tenantId: user.tenant.id,
       userId: user.id,
       startAt: {
-        equals: startOfToday
+        gte: startOfToday
       },
-
       endAt: {
         lte: endOfToday
       }
