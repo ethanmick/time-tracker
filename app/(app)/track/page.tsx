@@ -186,18 +186,13 @@ export default async function TrackPage() {
     where: {
       tenantId: user.tenant.id,
       userId: user.id,
-      OR: [
-        {
-          startAt: {
-            equals: startOfToday
-          }
-        },
-        {
-          endAt: {
-            lte: endOfToday
-          }
-        }
-      ]
+      startAt: {
+        equals: startOfToday
+      },
+
+      endAt: {
+        lte: endOfToday
+      }
     },
     orderBy: {
       startAt: 'asc'
