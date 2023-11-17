@@ -56,7 +56,7 @@ const getDates = (from: string, to: string) => {
 }
 
 export default async function AnalyticsPage({
-  searchParams: { from: fromUnparsed, to: toUnparsed }
+  searchParams: { from: fromUnparsed, to: toUnparsed },
 }: Props) {
   async function reload(data: FormData) {
     'use server'
@@ -73,17 +73,26 @@ export default async function AnalyticsPage({
       activities: {
         some: {
           startAt: {
-            gte: from
+            gte: from,
           },
           endAt: {
-            lte: to
-          }
-        }
-      }
+            lte: to,
+          },
+        },
+      },
     },
     include: {
-      activities: true
-    }
+      activities: {
+        where: {
+          startAt: {
+            gte: from,
+          },
+          endAt: {
+            lte: to,
+          },
+        },
+      },
+    },
   })
 
   const nullClientActivities = await prisma.activity.findMany({
@@ -91,23 +100,23 @@ export default async function AnalyticsPage({
       tenantId: user.tenant.id,
       clientId: null,
       startAt: {
-        gte: from
+        gte: from,
       },
       endAt: {
-        lte: to
-      }
-    }
+        lte: to,
+      },
+    },
   })
 
   const clientData = [
     {
       name: 'No Client',
-      duration: totalActivitiesDuration(nullClientActivities)
+      duration: totalActivitiesDuration(nullClientActivities),
     },
     ...clients.map((client) => ({
       name: client.name,
-      duration: totalActivitiesDuration(client.activities)
-    }))
+      duration: totalActivitiesDuration(client.activities),
+    })),
   ]
 
   const activityChartData: Record<string, number> = {}
@@ -177,7 +186,7 @@ export default async function AnalyticsPage({
           <ActivityChart
             data={Object.entries(activityChartData).map(([name, duration]) => ({
               name,
-              duration: duration / 1000 / 60 / 60
+              duration: duration / 1000 / 60 / 60,
             }))}
           />
         </Card>
