@@ -15,7 +15,7 @@ export async function NavBar() {
     <div className="shadow">
       <div className="container mx-auto flex items-center py-2 space-x-4">
         <Link href="/" className="py-1 px-2 hover:bg-slate-100 rounded">
-          <span className="font-semibold">Time Tracker</span>
+          <span className="font-semibold">Dashboard Parkour Devs</span>
         </Link>
         <nav>
           <ul className="flex items-center gap-4">
