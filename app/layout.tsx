@@ -4,8 +4,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Time Tracker',
-  description: 'Track your time'
+  title: 'Dashboard | Parkour Devs',
+  description: 'Tablero Interno para colaboradores de la organización Parkour Devs.'
 }
 
 export default function RootLayout({
