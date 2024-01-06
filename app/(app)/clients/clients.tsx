@@ -9,7 +9,7 @@ type ClientListProps = {
 }
 
 export const ClientList = ({ clients }: ClientListProps) => {
-  console.log('Clients', clients)
+  // console.log('Clients', clients)
   return (
     <ul>
       {clients.map((client) => (
