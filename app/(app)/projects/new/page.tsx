@@ -30,7 +30,7 @@ export default async function CreateProjectPage() {
 
   async function createProject(data: FormData) {
     'use server'
-    console.log('Project', data)
+    // console.log('Project', data)
     const user = await getUserSession()
     const client = data.get('client') as string
 

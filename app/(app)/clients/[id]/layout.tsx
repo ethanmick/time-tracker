@@ -13,7 +13,7 @@ export default async function ClientLayout({
       tenantId: user.tenant.id
     }
   })
-  console.log('Render Client Layout', clients)
+  // console.log('Render Client Layout', clients)
   return (
     <div className="container mx-auto flex gap-4 divide-x-2 py-4">
       <div className="w-1/2 px-4">
